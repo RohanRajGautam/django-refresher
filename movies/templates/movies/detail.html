@@ -4,15 +4,14 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Movies</title>
+		<title>{{ movie }}</title>
 	</head>
 	<body>
-		<h1>Movies:</h1>
-		<ul>
-			{% for movie in movies %}
-			<li><a href="{{movie.id}}">{{ movie.title }}</a></li>
-			{% endfor %}
-		</ul>
-		<a href="/movies/add">Add a movie</a>
+		<div style="display: flex; align-items: center; gap: 10px">
+			<h1>{{ movie.title }}</h1>
+			<p>({{ movie.year }})</p>
+		</div>
+
+		<a href="/movies/delete/{{movie.id}}"><button>Delete</button></a>
 	</body>
 </html>

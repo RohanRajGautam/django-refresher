@@ -1,59 +1,31 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-
-data = {
-  "movies": [
-    {
-      "title": "The Shawshank Redemption",
-      "year": 1994,
-      "director": "Frank Darabont",
-      "duration": "2h 22min",
-      "genre": [
-        "Crime",
-        "Drama"
-      ],
-      "rate": 9.3
-    },
-    {
-      "title": "The Godfather",
-      "year": 1972,
-      "director": "Francis Ford Coppola",
-      "duration": "2h 55min",
-      "genre": [
-        "Crime",
-        "Drama"
-      ],
-      "rate": 9.2
-    },
-    {
-      "title": "The Godfather: Part II",
-      "year": 1974,
-      "director": "Francis Ford Coppola",
-      "duration": "3h 22min",
-      "genre": [
-        "Crime",
-        "Drama"
-      ],
-      "rate": 9
-    },
-    {
-      "title": "The Dark Knight",
-      "year": 2008,
-      "director": "Christopher Nolan",
-      "duration": "2h 32min",
-      "genre": [
-        "Action",
-        "Crime",
-        "Drama",
-        "Thriller"
-      ],
-      "rate": 9
-    }
-  ]
-}
+from .models import Movie
 
 def movies(req):
-  return render(req, 'movies/movies.html', data)
+  data = Movie.objects.all()
+  return render(req, 'movies/movies.html', {'movies': data})
 
 def home(req):
   return HttpResponse('homepage')
+
+def detail(req, id):
+  data = Movie.objects.get(pk=id)
+  return render(req, 'movies/detail.html', {'movie': data})
+
+def add(req):
+  title = req.POST.get('title')
+  year = req.POST.get('year')
+
+  if title and year:
+    movie = Movie(title=title, year=year)
+    movie.save()
+    return HttpResponseRedirect('/movies')
+
+  return render(req, 'movies/add.html')
+
+def delete(req, id):
+  data = Movie.objects.get(pk=id)
+  data.delete()
+  
+  return HttpResponseRedirect('/movies')
